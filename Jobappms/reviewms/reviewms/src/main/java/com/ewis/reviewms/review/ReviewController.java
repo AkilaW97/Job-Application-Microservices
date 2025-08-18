@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/reviews")
 public class ReviewController {
 
     private ReviewService reviewService;
@@ -16,7 +16,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/reviews")
+    @GetMapping
     public ResponseEntity<List<Review>> getAllReviews(@RequestParam Long companyId){
         return new ResponseEntity<>(reviewService.getAllReviews(companyId), HttpStatus.OK);
     }
