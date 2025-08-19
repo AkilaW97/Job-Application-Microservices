@@ -3,7 +3,9 @@ package com.ewis.jobms.job.impl;
 import com.ewis.jobms.job.Job;
 import com.ewis.jobms.job.JobRepository;
 import com.ewis.jobms.job.JobService;
+import com.ewis.jobms.job.external.Company;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<Job> findAll() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getForObject("http://localhost:8084/companies/1", Company.class);
         return jobRepository.findAll();
     }
 
