@@ -5,6 +5,7 @@ import com.ewis.jobms.job.JobRepository;
 import com.ewis.jobms.job.JobService;
 import com.ewis.jobms.job.dto.JobWithCompanyDTO;
 import com.ewis.jobms.job.external.Company;
+import com.ewis.jobms.job.mapper.JobMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -37,13 +38,9 @@ public class JobServiceImpl implements JobService {
         return jobs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    //converts a job into jobwithcompany object
     private JobWithCompanyDTO convertToDto(Job job) {
-
-        JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
-        jobWithCompanyDTO.setJob(job);
-        //RestTemplate restTemplate = new RestTemplate();
         Company company = restTemplate.getForObject("http://COMPANYMS:8084/companies/" + job.getCompanyID(), Company.class);
+        JobWithCompanyDTO jobWithCompanyDTO = JobMapper.mapToJobWithCompanyDto(job,company);
         jobWithCompanyDTO.setCompany(company);
 
         return jobWithCompanyDTO;
