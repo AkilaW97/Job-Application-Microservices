@@ -37,6 +37,7 @@ public class JobServiceImpl implements JobService {
         return jobs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    //converts a job into jobwithcompany object
     private JobWithCompanyDTO convertToDto(Job job) {
 
         JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
@@ -55,8 +56,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job getJobById(Long id) {
-        return jobRepository.findById(id).orElse(null);
+    public JobWithCompanyDTO getJobById(Long id) {
+        Job job = jobRepository.findById(id).orElse(null);
+        return convertToDto(job);
     }
 
     @Override
