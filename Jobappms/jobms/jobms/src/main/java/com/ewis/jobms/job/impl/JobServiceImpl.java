@@ -5,8 +5,12 @@ import com.ewis.jobms.job.JobRepository;
 import com.ewis.jobms.job.JobService;
 import com.ewis.jobms.job.dto.JobDTO;
 import com.ewis.jobms.job.external.Company;
+import com.ewis.jobms.job.external.Review;
 import com.ewis.jobms.job.mapper.JobMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,8 +44,16 @@ public class JobServiceImpl implements JobService {
 
     private JobDTO convertToDto(Job job) {
         Company company = restTemplate.getForObject("http://COMPANYMS:8084/companies/" + job.getCompanyID(), Company.class);
-        JobDTO jobDTO = JobMapper.mapToJobWithCompanyDto(job,company);
-        jobDTO.setCompany(company);
+
+        ResponseEntity<List<Review>> reviewResponse = restTemplate.exchange("http://REVIEWMS:8083/reviews?companyId=" + job.getCompanyID(),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Review>>() {
+        });
+
+        List<Review> reviews = reviewResponse.getBody();
+
+        JobDTO jobDTO = JobMapper.mapToJobWithCompanyDto(job,company,reviews);
 
         return jobDTO;
 

@@ -3,6 +3,8 @@ package com.ewis.jobms.job.dto;
 import com.ewis.jobms.job.external.Company;
 import com.ewis.jobms.job.external.Review;
 
+import java.util.List;
+
 public class JobDTO {
 
     private Long id;
@@ -12,7 +14,7 @@ public class JobDTO {
     private String maxSalary;
     private String location;
     private Company company;
-    private Review review;
+    private List<Review> reviews;
 
     public Long getId() {
         return id;
@@ -70,11 +72,11 @@ public class JobDTO {
         this.company = company;
     }
 
-    public Review getReview() {
-        return review;
+    public List<Review> getReviews() {
+        return reviews;
     }
 
-    public void setReview(Review review) {
-        this.review = review;
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }
