@@ -3,7 +3,7 @@ package com.ewis.jobms.job.impl;
 import com.ewis.jobms.job.Job;
 import com.ewis.jobms.job.JobRepository;
 import com.ewis.jobms.job.JobService;
-import com.ewis.jobms.job.dto.JobWithCompanyDTO;
+import com.ewis.jobms.job.dto.JobDTO;
 import com.ewis.jobms.job.external.Company;
 import com.ewis.jobms.job.mapper.JobMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +30,20 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobWithCompanyDTO> findAll() {
+    public List<JobDTO> findAll() {
         List<Job> jobs = jobRepository.findAll();
-        List<JobWithCompanyDTO> jobWithCompanyDTOS = new ArrayList<>();
+        List<JobDTO> jobDTOS = new ArrayList<>();
 
         //converts the jobs into streams (stream is an element that can be process in the pipeline)
         return jobs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    private JobWithCompanyDTO convertToDto(Job job) {
+    private JobDTO convertToDto(Job job) {
         Company company = restTemplate.getForObject("http://COMPANYMS:8084/companies/" + job.getCompanyID(), Company.class);
-        JobWithCompanyDTO jobWithCompanyDTO = JobMapper.mapToJobWithCompanyDto(job,company);
-        jobWithCompanyDTO.setCompany(company);
+        JobDTO jobDTO = JobMapper.mapToJobWithCompanyDto(job,company);
+        jobDTO.setCompany(company);
 
-        return jobWithCompanyDTO;
+        return jobDTO;
 
     }
 
@@ -53,7 +53,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public JobWithCompanyDTO getJobById(Long id) {
+    public JobDTO getJobById(Long id) {
         Job job = jobRepository.findById(id).orElse(null);
         return convertToDto(job);
     }

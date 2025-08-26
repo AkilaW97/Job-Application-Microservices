@@ -1,9 +1,9 @@
 package com.ewis.jobms.job.dto;
 
-import com.ewis.jobms.job.Job;
 import com.ewis.jobms.job.external.Company;
+import com.ewis.jobms.job.external.Review;
 
-public class JobWithCompanyDTO {
+public class JobDTO {
 
     private Long id;
     private String title;
@@ -12,6 +12,7 @@ public class JobWithCompanyDTO {
     private String maxSalary;
     private String location;
     private Company company;
+    private Review review;
 
     public Long getId() {
         return id;
@@ -67,5 +68,13 @@ public class JobWithCompanyDTO {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 }
