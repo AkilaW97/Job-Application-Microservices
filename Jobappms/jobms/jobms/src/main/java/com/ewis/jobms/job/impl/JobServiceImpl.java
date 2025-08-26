@@ -3,6 +3,8 @@ package com.ewis.jobms.job.impl;
 import com.ewis.jobms.job.Job;
 import com.ewis.jobms.job.JobRepository;
 import com.ewis.jobms.job.JobService;
+import com.ewis.jobms.job.clients.CompanyClients;
+import com.ewis.jobms.job.clients.ReviewClient;
 import com.ewis.jobms.job.dto.JobDTO;
 import com.ewis.jobms.job.external.Company;
 import com.ewis.jobms.job.external.Review;
@@ -29,8 +31,13 @@ public class JobServiceImpl implements JobService {
     @Autowired
     RestTemplate restTemplate;
 
-    public JobServiceImpl(JobRepository jobRepository) {
+    private CompanyClients companyClients;
+    private ReviewClient reviewClient;
+
+    public JobServiceImpl(JobRepository jobRepository, CompanyClients companyClients, ReviewClient reviewClient) {
         this.jobRepository = jobRepository;
+        this.companyClients = companyClients;
+        this.reviewClient = reviewClient;
     }
 
     @Override
@@ -43,15 +50,8 @@ public class JobServiceImpl implements JobService {
     }
 
     private JobDTO convertToDto(Job job) {
-        Company company = restTemplate.getForObject("http://COMPANYMS:8084/companies/" + job.getCompanyID(), Company.class);
-
-        ResponseEntity<List<Review>> reviewResponse = restTemplate.exchange("http://REVIEWMS:8083/reviews?companyId=" + job.getCompanyID(),
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Review>>() {
-        });
-
-        List<Review> reviews = reviewResponse.getBody();
+        Company company = companyClients.getCompany(job.getCompanyID());
+        List<Review> reviews = reviewClient.getReviews(job.getCompanyID());
 
         JobDTO jobDTO = JobMapper.mapToJobWithCompanyDto(job,company,reviews);
 
