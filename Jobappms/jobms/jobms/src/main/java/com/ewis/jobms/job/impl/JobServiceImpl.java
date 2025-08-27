@@ -28,8 +28,7 @@ public class JobServiceImpl implements JobService {
     JobRepository jobRepository;
     //private Long nextId = 1L;
 
-    @Autowired
-    RestTemplate restTemplate;
+    //RestTemplate restTemplate;
 
     private CompanyClients companyClients;
     private ReviewClient reviewClient;
