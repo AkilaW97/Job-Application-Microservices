@@ -1,5 +1,7 @@
 package com.ewis.companyms.company;
 
+import com.ewis.companyms.dto.ReviewMessage;
+
 import java.util.List;
 
 public interface CompanyService {
@@ -9,6 +11,7 @@ public interface CompanyService {
     void createCompany (Company company);
     boolean deleteCompany(Long id);
     Company getCompanyById(Long id);
+    public void updateCompanyRating(ReviewMessage reviewMessage);
 
 
 }

@@ -3,6 +3,7 @@ package com.ewis.companyms.company.impl;
 import com.ewis.companyms.company.Company;
 import com.ewis.companyms.company.CompanyRepository;
 import com.ewis.companyms.company.CompanyService;
+import com.ewis.companyms.dto.ReviewMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,6 +50,11 @@ public class CompanyServiceImpl implements CompanyService {
         }else {
             return false;
         }
+    }
+
+    @Override
+    public void updateCompanyRating(ReviewMessage reviewMessage) {
+
     }
 
     @Override
