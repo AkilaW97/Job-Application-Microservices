@@ -1,6 +1,6 @@
 package com.ewis.companyms.company;
 
-import com.ewis.companyms.dto.ReviewMessage;
+import com.ewis.companyms.company.dto.ReviewMessage;
 
 import java.util.List;
 

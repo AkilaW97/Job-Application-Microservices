@@ -1,9 +1,11 @@
-package com.ewis.companyms.messaging;
+package com.ewis.companyms.company.messaging;
 
 import com.ewis.companyms.company.CompanyService;
-import com.ewis.companyms.dto.ReviewMessage;
+import com.ewis.companyms.company.dto.ReviewMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReviewMessageConsumer {
     private final CompanyService companyService;
 

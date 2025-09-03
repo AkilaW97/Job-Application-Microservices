@@ -1,4 +1,4 @@
-package com.ewis.companyms.dto;
+package com.ewis.companyms.company.dto;
 
 public class ReviewMessage {
     private Long id;

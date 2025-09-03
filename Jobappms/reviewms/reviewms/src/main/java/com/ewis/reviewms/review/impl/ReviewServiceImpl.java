@@ -3,6 +3,7 @@ package com.ewis.reviewms.review.impl;
 import com.ewis.reviewms.review.Review;
 import com.ewis.reviewms.review.ReviewRepository;
 import com.ewis.reviewms.review.ReviewService;
+import com.ewis.reviewms.review.messaging.ReviewMessageProducer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.List;
 public class ReviewServiceImpl implements ReviewService {
 
     private ReviewRepository reviewRepository;
-
 
     public ReviewServiceImpl(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;

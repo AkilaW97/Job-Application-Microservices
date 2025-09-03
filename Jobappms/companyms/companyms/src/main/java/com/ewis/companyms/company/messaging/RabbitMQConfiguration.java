@@ -1,4 +1,4 @@
-package com.ewis.companyms.messaging;
+package com.ewis.companyms.company.messaging;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
