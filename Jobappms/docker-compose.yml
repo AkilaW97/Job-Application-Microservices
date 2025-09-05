@@ -1,27 +1,28 @@
+version: "3.7"
+
 services:
   postgres:
-    container_name: postgres_container
-    image: postgres
+    container_name: postgres
+    image: postgres:latest
     environment:
-      POSTGRES_DB: jobapp
       POSTGRES_USER: akila
       POSTGRES_PASSWORD: akila
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5436:5432"
+      - "5432:5432"
     networks:
       - postgres
     restart: unless-stopped
 
   pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-akila}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_SERVER_MODE: "False"
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
@@ -29,27 +30,106 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservice-network
+    restart: unless-stopped
+
   zipkin:
-    image: openzipkin/zipkin
+    image: openzipkin/zipkin:latest
     container_name: zipkin
     ports:
-     - 9411:9411
+      - "9411:9411"
     networks:
-     - postgres
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3-management
+      - microservice-network
+    restart: unless-stopped
+
+  servicereg:
+    image: akilatw/servicereg:latest
+    container_name: servicereg
     ports:
-     - 5672:5672
-     - 15672:15672
+      - "8761:8761"
+    depends_on:
+      - rabbitmq
+      - zipkin
+      - postgres
+      - pgadmin
     networks:
+      - microservice-network
+      - postgres
+    restart: unless-stopped
+
+  config-server:
+    image: akilatw/config-server:latest
+    container_name: config-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - servicereg
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: unless-stopped
+
+  companyms:
+    image: akilatw/companyms:latest
+    container_name: companyms
+    ports:
+      - "8084:8084"
+    depends_on:
+      - servicereg
+      - config-server
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    
+  reviewms:
+    image: akilatw/reviewms:latest
+    container_name: review
+    ports:
+     - "8083:8083"
+    depends_on:
+     - servicereg
+     - config-server
+    networks:
+     - microservice-network
      - postgres
-     
-networks:
-  postgres:
-    driver: bridge
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: unless-stopped
+    
+  jobms:
+    image: akilatw/jobmsdir:latest
+    container_name: job
+    ports:
+     - "8085:8085"
+    depends_on:
+     - servicereg
+     - config-server
+    networks:
+     - microservice-network
+     - postgres
+    environment:
+     SPRING_PROFILES_ACTIVE: docker
+     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://servicereg:8761/eureka"
+    restart: unless-stopped    
 
 volumes:
   postgres:
   pgadmin:
 
+networks:
+  microservice-network:
+    driver: bridge
+  postgres:
+    driver: bridge
